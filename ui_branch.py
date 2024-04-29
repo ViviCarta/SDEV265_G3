@@ -17,6 +17,25 @@ class WeatherApp(ctk.CTk):
         self.background_label = Label(self, image=self.background_img, bg="white")
         self.background_label.pack()
 
+        '''
+            LIST OF WIDGETS TO BE CREATED:
+
+            searchBox (input field)
+            searchButton (button)
+            refreshButton (button)
+
+            locationLabel (dynamic & static label)
+            temperatureLabel (dynamic & static label)
+            windSpeedLabel (dynamic & static label)
+            humidityLabel (dynamic & static label)
+            conditionLabel (dynamic & static label)
+
+            LESS IMPORTANT WIDGETS:
+            temperatureSwitch (f to c)
+            windSpeedSwitch (f to c)
+        ''' 
+
+
         
 if __name__ == "__main__":
     app = WeatherApp()
