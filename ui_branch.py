@@ -20,19 +20,19 @@ class WeatherApp(ctk.CTk):
         '''
             LIST OF WIDGETS TO BE CREATED:
 
-            searchBox (input field)
-            searchButton (button)
-            refreshButton (button)
+            - searchBox (input field)
+            - searchButton (button)
+            - refreshButton (button)
 
-            locationLabel (dynamic & static label)
-            temperatureLabel (dynamic & static label)
-            windSpeedLabel (dynamic & static label)
-            humidityLabel (dynamic & static label)
-            conditionLabel (dynamic & static label)
+            - locationLabel (dynamic & static label)
+            - temperatureLabel (dynamic & static label)
+            - windSpeedLabel (dynamic & static label)
+            - humidityLabel (dynamic & static label)
+            - conditionLabel (dynamic & static label)
 
             LESS IMPORTANT WIDGETS:
-            temperatureSwitch (f to c)
-            windSpeedSwitch (f to c)
+            - temperatureSwitch (f to c)
+            - windSpeedSwitch (f to c)
         ''' 
 
 
