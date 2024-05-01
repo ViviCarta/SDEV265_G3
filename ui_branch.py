@@ -1,3 +1,6 @@
+'''
+# It is included in the main.p
+
 from tkinter import *
 import customtkinter as ctk
 from PIL import ImageTk, Image
@@ -17,26 +20,26 @@ class WeatherApp(ctk.CTk):
         self.background_label = Label(self, image=self.background_img, bg="white")
         self.background_label.pack()
 
-        '''
-            LIST OF WIDGETS TO BE CREATED:
+        # Search Box
+        #self.searchBox = ctk.CTkEntry(self, placeholder_text="CTkEntry")
+        self.textbox = ctk.CTkTextbox(self.background_label, activate_scrollbars=False, width=150, height=15, corner_radius=0)
+        self.textbox.pack()
 
-            - searchBox (input field)
-            - searchButton (button)
-            - refreshButton (button)
+        # Search Button
+        self.searchButton = ctk.CTkButton(self.background_label, text="Search", width=110, corner_radius=6,
+                                         font=ctk.CTkFont("Arial", size=16), fg_color="black",
+                                         hover_color="gray", text_color="white", command=self.sayHi)
+        self.searchButton.pack()
 
-            - locationLabel (dynamic & static label)
-            - temperatureLabel (dynamic & static label)
-            - windSpeedLabel (dynamic & static label)
-            - humidityLabel (dynamic & static label)
-            - conditionLabel (dynamic & static label)
-
-            LESS IMPORTANT WIDGETS:
-            - temperatureSwitch (f to c)
-            - windSpeedSwitch (f to c)
-        ''' 
-
-
+    def sayHi(self):
+        print("button pressed")
         
 if __name__ == "__main__":
     app = WeatherApp()
     app.mainloop()
+
+
+    # Sharing screen
+
+'''
+
