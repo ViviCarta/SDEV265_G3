@@ -6,15 +6,17 @@ class WeatherManager():
         self.weather_data: requests.Response
         self.city: str = "Default city"
         self.temperature: float = 0.0
+        self.temperature_unit: str = "F"
         self.windspeed: float = 0.0
+        self.wind_unit: str = "mph"
         self.humidity: float = 0
         self.condition: str = "Default weather condition"
 
     def __str__(self):
         return (
             f"Weather in {self.city}:\n"
-            f"Temperature: {self.temperature}°F\n"
-            f"Windspeed: {self.windspeed} mph\n"
+            f"Temperature: {self.temperature}°{self.temperature_unit}]\n"
+            f"Windspeed: {self.windspeed} {self.wind_unit}]\n"
             f"Humidity: {self.humidity}%\n"
             f"Condition: {self.condition}\n"
         )
@@ -65,3 +67,31 @@ class WeatherManager():
             self.condition = self.weather_data['weather'][0]['main']
         else:
             print("Weather condition data not available.")
+
+    def convertTemperature(self):
+        """
+        Converts self.temperature between 
+        Celcius and Farenheit depending on self.temperature_unit.
+        """
+
+        if self.temperature_unit == "F":
+            self.temperature = round((self.temperature - 32) * 5 / 9) # Conversion formula
+            self.temperature_unit = "C"
+        else:
+            self.temperature = round(self.temperature * 9 / 5 + 32)
+            self.temperature_unit = "F"
+        print(f"Temperature converted to { self.temperature_unit }: { self.temperature }")
+
+    def convertWindspeed(self):
+        """
+        Converts self.windspeed between 
+        mph and km/h depending on self.wind_unit.
+        """
+
+        if self.wind_unit == "mph":
+            self.windspeed = round(self.windspeed * 1.60934) # Constant used in conversion formula
+            self.wind_unit = "km/h"
+        else:
+            self.windspeed = round(self.windspeed / 1.60934)
+            self.wind_unit = "mph"
+        print(f"Windspeed converted to { self.wind_unit }: { self.windspeed }")
