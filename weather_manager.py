@@ -4,13 +4,13 @@ class WeatherManager():
     def __init__(self, api_key) -> None:
         self.api_key: str = api_key
         self.weather_data: requests.Response
-        self.location: str = "Default location"
-        self.temperature: float = 0.0
+        self.location: str = "None"
+        self.temperature: int = 0
         self.temperature_unit: str = "F"
-        self.windspeed: float = 0.0
+        self.windspeed: int = 0
         self.wind_unit: str = "mph"
         self.humidity: float = 0
-        self.condition: str = "Default weather condition"
+        self.condition: str = "None"
 
     def __str__(self):
         return (
@@ -45,14 +45,14 @@ class WeatherManager():
     # Parses data from self.weather_data and updates self.temperature
     def parse_temperature(self):
         if 'main' in self.weather_data and 'temp' in self.weather_data['main']:
-            self.temperature = self.weather_data['main']['temp']
+            self.temperature = round(self.weather_data['main']['temp'])
         else:
             print("Temperature data not available.")
 
     # Parses data from self.weather_data and updates self.windspeed
     def parse_windspeed(self):
         if 'wind' in self.weather_data and 'speed' in self.weather_data['wind']:
-            self.windspeed = self.weather_data['wind']['speed']
+            self.windspeed = round(self.weather_data['wind']['speed'])
         else:
             print("Wind speed data not available.")
 
