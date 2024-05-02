@@ -1,16 +1,20 @@
-# API Imports
+# Standard library imports
 import requests
+
+# Third-party library imports
+from tkinter import *
+from PIL import ImageTk, Image
+import customtkinter as ctk
+import pywinstyles
+
+# Local imports
 from weather_manager import WeatherManager
 from config import api_key
 
-# Tkinter Imports
-from tkinter import *
-import customtkinter as ctk
-from PIL import ImageTk, Image
-ctk.set_appearance_mode("light")
-
-# Instantiate WeatherManager
-weather_manager = WeatherManager(api_key)
+# Constants
+BACKGROUND_IMAGE_PATH = "images/background_image.jpg"
+MAIN_FRAME_WIDTH = 850
+MAIN_FRAME_HEIGHT = 450
 
 class WeatherApp(ctk.CTk):
     """Displays the main application window"""
@@ -21,15 +25,27 @@ class WeatherApp(ctk.CTk):
         self.resizable(False, False)
         self.title("Tempest Tracker")
         
-        self.background_img = ImageTk.PhotoImage(Image.open("images/bkgrnd.jpg"))
+        # Load background image
+        self.background_img = ImageTk.PhotoImage(Image.open(BACKGROUND_IMAGE_PATH))
         self.background_label = Label(self, image=self.background_img, bg="white")
         self.background_label.pack(expand=True, fill="both")
         
-        "Create a main frame to hold widgets"
-        self.main_frame = ctk.CTkFrame(self.background_label, width=850, height=450,
-                                       fg_color="#257281", bg_color="#deccb9", corner_radius=30)
+        # Set appearance mode
+        ctk.set_appearance_mode("light")
+
+        # Instantiate WeatherManager
+        self.weather_manager = WeatherManager(api_key)
+
+        # Create main frame with transparent corners
+        self.create_main_frame()
+        self.create_widgets()
+
+    def create_main_frame(self):
+        self.main_frame = ctk.CTkFrame(self, width=MAIN_FRAME_WIDTH, height=MAIN_FRAME_HEIGHT, fg_color="#257281", bg_color="#000001", corner_radius=30)
         self.main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-        
+        pywinstyles.set_opacity(self.main_frame, color="#000001", value=0.7)
+
+    def create_widgets(self):
         "Create an entry widget for user input"
         self.weather_entry = ctk.CTkEntry(self.main_frame, width=550, height=50, fg_color="white",
                                            bg_color="#257281", placeholder_text="Type the location here...", 
@@ -38,115 +54,117 @@ class WeatherApp(ctk.CTk):
                                            border_color="black")
         self.weather_entry.place(x=150, y=100)
         
-        "Create a search button"
-        self.search_button = ctk.CTkButton(self, text="Search", width=100, anchor="center",
-                                           font=ctk.CTkFont("Arial", size=16),
-                                           fg_color="#3ba1c8", bg_color="white", corner_radius=20,
-                                           hover_color="gray", command=self.updateWeather)
-        self.search_button.place(x=500, y=210)
+        "Create a search and refresh button"
+        self.search_button = self.create_button(self.weather_entry, "Search", self.updateWeather, 280, 10)
+        self.refresh_button = self.create_button(self.weather_entry, "Refresh", self.update_info_labels, 400, 10)
         
-        "Create a refresh button"
-        self.refresh_button = ctk.CTkButton(self, text="Refresh", width=100, anchor="center",
-                                           font=ctk.CTkFont("Arial", size=16),
-                                           fg_color="#3ba1c8", bg_color="white", corner_radius=20,
-                                           hover_color="gray", command=self.updateWeather)
-        self.refresh_button.place(x=620, y=210)
-        
-        "Create a frame within main frame to hold data widgets"
+        "Data frame within main frame that contains widgets"
         self.data_frame = ctk.CTkFrame(self.main_frame, width=720, height=200,
                                        fg_color="white", bg_color="#257281", 
                                        border_color="black", border_width=2, corner_radius=30)
         self.data_frame.place(x=70, y=200)
         
-        "Create heading for Temperature"
-        self.temp_heading = ctk.CTkLabel(self.data_frame, text="Temperature",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="#949494")
-        self.temp_heading.place(x=180, y=15)
-        
-        "Create a label that will display Temperature result"
-        self.temp_result = ctk.CTkLabel(self.data_frame, text="0.0°F",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="black")
-        self.temp_result.place(x=180, y=40)
-        
-        "Create heading for Wind Speed"
-        self.wind_heading = ctk.CTkLabel(self.data_frame, text="Wind Speed",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="#949494")
-        self.wind_heading.place(x=400, y=15)
-        
-        "Create a label that will display Wind Speed result"
-        self.wind_result = ctk.CTkLabel(self.data_frame, text="0.0 mph",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="black")
-        self.wind_result.place(x=400, y=40)
+        # Labels for weather data
+        self.temp_heading = self.create_heading_label(self.data_frame, "Temperature", 180, 15)
+        self.temp_result = self.create_info_label(self.data_frame, "0.0°F", 180, 40)
 
-        "Create heading for Current Location"
-        self.location_heading = ctk.CTkLabel(self.data_frame, text="Location",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="#949494")
-        self.location_heading.place(x=90, y=90)
+        self.wind_heading = self.create_heading_label(self.data_frame, "Wind Speed", 400, 15)
+        self.wind_result = self.create_info_label(self.data_frame, "0.0 mph", 400, 40)
 
-        "Create a label that will display Current Location result"
-        self.location_result = ctk.CTkLabel(self.data_frame, text="Default Location",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="black")
-        self.location_result.place(x=90, y=115)
+        self.location_heading = self.create_heading_label(self.data_frame, "Location", 90, 90)
+        self.location_result = self.create_info_label(self.data_frame, "Default Location", 90, 115)
 
-        "Create heading for Humidity"
-        self.humidity_heading = ctk.CTkLabel(self.data_frame, text="Humidity",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="#949494")
-        self.humidity_heading.place(x=310, y=90)
+        self.humidity_heading = self.create_heading_label(self.data_frame, "Humidity", 310, 90)
+        self.humidity_result = self.create_info_label(self.data_frame, "0.0%", 310, 115)
 
-        "Create a label that will display Humidity result"
-        self.humidity_result = ctk.CTkLabel(self.data_frame, text="0.0%",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="black")
-        self.humidity_result.place(x=310, y=115)
+        self.condition_heading = self.create_heading_label(self.data_frame, "Condition", 510, 90)
+        self.condition_result = self.create_info_label(self.data_frame, "Default condition", 510, 115)
 
-        "Create heading for Condition"
-        self.condition_heading = ctk.CTkLabel(self.data_frame, text="Condition",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="#949494")
-        self.condition_heading.place(x=510, y=90)
+    def create_heading_label(self, parent, text, x, y):
+        """
+        Single method used for header creation 
+        so all headers have the same styling
 
-        "Create a label that will display Condition result"
-        self.condition_result = ctk.CTkLabel(self.data_frame, text="Default condition",
-                                        font=ctk.CTkFont("Arial", size=18),
-                                        text_color="black")
-        self.condition_result.place(x=510, y=115)
+        Args:
+            parent (ctkWidget): Parent display object
+            text (str): Text displayed on the label
+            x (int): x position on screen
+            y (int ): y position on screen
 
+        Returns:
+            label (ctk.CTkLabel): The header label object
+        """        
+        label = ctk.CTkLabel(parent, text=text,
+                            font=ctk.CTkFont("Arial", size=18),
+                            text_color="#949494")
+        label.place(x=x, y=y)
+        return label
+    
+    def create_info_label(self, parent, text, x, y):
+        """
+        Single method used for creating info labels
+        so all info labels have the same styling
+
+        Args:
+            parent (ctkWidget): Parent display object
+            text (str): Text displayed on the label
+            x (int): x position on screen
+            y (int ): y position on screen
+
+        Returns:
+            label (ctk.CTkLabel): The info label object
+        """ 
+        label = ctk.CTkLabel(parent, text=text,
+                            font=ctk.CTkFont("Arial", size=18),
+                            text_color="black")
+        label.place(x=x, y=y)
+        return label
+
+
+    def create_button(self, parent, text, command, x, y):
+        """
+        Single method used for button creation
+        so all buttons have the same styling
+
+        Args:
+            parent (ctkWidget): Parent display object
+            text (str): Text displayed on the button
+            command (function): Function called on button press
+            x (int): x position on screen
+            y (int ): y position on screen
+
+        Returns:
+            button (ctk.CTkButton): The button object
+        """            
+        button = ctk.CTkButton(parent, text=text, width=100, anchor="center",
+                            font=ctk.CTkFont("Arial", size=16),
+                            fg_color="#3ba1c8", bg_color="#000001", corner_radius=20,
+                            hover_color="gray", command=command)
+        button.place(x=x, y=y)
+        pywinstyles.set_opacity(button, color="#000001", value=1)
+        return button
 
     def updateWeather(self):
+        """
+        This method gets user input from the entry box
+        and makes an API call thorugh weather_manager.getData()
+        Then the info labels display the resulting data.
+        """        
         user_input = self.weather_entry.get()  # Retrieve text from the beginning to the end
         print(f"USER_INPUT: {user_input}")
-        weather_manager.getData(user_input)
-        print(weather_manager)
+        self.weather_manager.getData(user_input)
+        print(self.weather_manager)
 
+        self.update_info_labels()
+
+    def update_info_labels(self):
         # Update all labels (When the Refresh Button is Pressed)
-
-        self.updateTemperature()
-        self.updateWindspeed()
-        self.updateLocation()
-        self.updateHumidity()
-        self.updateCondition()
-
-    def updateTemperature(self):
-        self.temp_result.configure(text=f"{weather_manager.temperature}°{weather_manager.temperature_unit}")
-
-    def updateWindspeed(self):
-        self.wind_result.configure(text=f"{weather_manager.windspeed}{weather_manager.wind_unit}")
-
-    def updateLocation(self):
-        self.location_result.configure(text=f"{weather_manager.city}")
-
-    def updateHumidity(self):
-        self.humidity_result.configure(text=f"{weather_manager.humidity}%")
-
-    def updateCondition(self):
-        self.condition_result.configure(text=f"{weather_manager.condition}")
+        self.temp_result.configure(text=f"{self.weather_manager.temperature}°{self.weather_manager.temperature_unit}")
+        self.wind_result.configure(text=f"{self.weather_manager.windspeed}{self.weather_manager.wind_unit}")
+        self.location_result.configure(text=f"{self.weather_manager.location}")
+        self.humidity_result.configure(text=f"{self.weather_manager.humidity}%")
+        self.condition_result.configure(text=f"{self.weather_manager.condition}")
+        
         
 if __name__ == "__main__":
     app = WeatherApp()

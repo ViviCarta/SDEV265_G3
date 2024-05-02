@@ -4,7 +4,7 @@ class WeatherManager():
     def __init__(self, api_key) -> None:
         self.api_key: str = api_key
         self.weather_data: requests.Response
-        self.city: str = "Default city"
+        self.location: str = "Default location"
         self.temperature: float = 0.0
         self.temperature_unit: str = "F"
         self.windspeed: float = 0.0
@@ -14,27 +14,29 @@ class WeatherManager():
 
     def __str__(self):
         return (
-            f"Weather in {self.city}:\n"
-            f"Temperature: {self.temperature}°{self.temperature_unit}]\n"
-            f"Windspeed: {self.windspeed} {self.wind_unit}]\n"
+            f"Weather in {self.location}:\n"
+            f"Temperature: {self.temperature}°{self.temperature_unit}\n"
+            f"Windspeed: {self.windspeed} {self.wind_unit}\n"
             f"Humidity: {self.humidity}%\n"
             f"Condition: {self.condition}\n"
         )
 
-    def getData(self, city: str):
-        # Set city
-        self.city = city
+    def getData(self, location: str):
+        # Set location
+        self.location = location
 
-        # Request with city and api. Returns JSON
-        response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={self.city}&units=imperial&APPID={self.api_key}")
+        # Request with location and api. Returns JSON
+        response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={self.location}&units=imperial&APPID={self.api_key}")
         
         # Check if the response is successful (status code 200)
         if response.status_code == 200:
             self.weather_data = response.json()  # Assign only if response is successful
             print(f"Weather data retrieved successfully. Status code: {response.status_code}")
+            print(self.weather_data)
             # Update information
             self.parse_temperature()
             self.parse_windspeed()
+            self.parse_location()
             self.parse_humidity()
             self.parse_condition()
         else:
@@ -54,6 +56,13 @@ class WeatherManager():
         else:
             print("Wind speed data not available.")
 
+    # Parses data from self.weather_data and updates self.location
+    def parse_location(self):
+        if 'name' in self.weather_data:
+            self.location = self.weather_data['name']
+        else:
+            print("Location data not available.")
+    
     # Parses data from self.weather_data and updates self.humidity
     def parse_humidity(self):
         if 'main' in self.weather_data and 'humidity' in self.weather_data['main']:
