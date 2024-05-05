@@ -12,4 +12,5 @@ To run the exactable, download the ZIP file [here](https://drive.google.com/file
 
 **NOTE** \
 The ZIP file exactable is currently only available for windows. \
-This README.md file will be updated when the Mac build is complete.
+This README.md file will be updated when the Mac build is complete. \
+At present, support for operating systems other than Windows and Mac is not planned.
