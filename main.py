@@ -5,7 +5,7 @@ import requests
 from tkinter import *
 from PIL import ImageTk, Image
 import customtkinter as ctk
-# import pywinstyles
+import pywinstyles
 
 """Local imports"""
 from weather_manager import WeatherManager
@@ -44,9 +44,9 @@ class WeatherApp(ctk.CTk):
         self.create_widgets()
 
     def create_main_frame(self) -> None:
-        self.main_frame = ctk.CTkFrame(self, width=MAIN_FRAME_WIDTH, height=MAIN_FRAME_HEIGHT, fg_color="#257281", bg_color="#FFFFFF", corner_radius=30)
+        self.main_frame = ctk.CTkFrame(self, width=MAIN_FRAME_WIDTH, height=MAIN_FRAME_HEIGHT, fg_color="#257281", bg_color="#000001", corner_radius=30)
         self.main_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-        #pywinstyles.set_opacity(self.main_frame, color="#000001", value=0.7)
+        pywinstyles.set_opacity(self.main_frame, color="#000001", value=0.9)
 
     def create_widgets(self) -> None:
         """Create an entry widget for user input"""
@@ -166,10 +166,10 @@ class WeatherApp(ctk.CTk):
         """            
         button = ctk.CTkButton(parent, image=image, text=text, width=100, anchor="center",
                             font=ctk.CTkFont("Arial", size=16),
-                            fg_color="#3ba1c8", bg_color="#FFFFFF", corner_radius=20,
+                            fg_color="#3ba1c8", bg_color="#000001", corner_radius=20,
                             hover_color="gray", command=command)
         button.place(x=x, y=y)
-        #pywinstyles.set_opacity(button, color="#000001", value=1)
+        pywinstyles.set_opacity(button, color="#000001", value=1)
         return button
 
     def update_weather(self) -> None:
