@@ -2,7 +2,7 @@
 
 ## Running the exactable:
 Tempest Tracker is not distributed officially but is available for download via google drive link. \
-To run the exactable, download the ZIP file [here](https://drive.google.com/file/d/13R1d7BmKQ2swAmlmQP8IDxJoo3OOYZc1/view?usp=sharing), extract the ZIP file, and run "TempestTracker.exe".
+To run the exactable, download the ZIP file [here](https://drive.google.com/file/d/1UgV1tTDZlckSDTREIxmCbpSTThgZ5MIE/view?usp=sharing), extract the ZIP file, and run "TempestTracker.exe".
 
 ## Running code locally:
 To run the code locally, navigate to a new directory and run the following commands: \
